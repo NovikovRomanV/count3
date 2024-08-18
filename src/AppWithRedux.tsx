@@ -1,15 +1,19 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import './App.css';
 import {Input} from "./components/Input";
 import {Button} from "./components/Button";
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootStateType} from "./state/Store";
-import {countButtonAC, InitialStateType, restButtonAC, setInputMaxAC, setInputMinAC} from "./state/CountReducer";
+import {
+    countButtonAC,
+    restButtonAC,
+    setCountValueAC,
+    setInputMaxAC,
+    setInputMinAC,
+} from "./state/CountReducer";
 
 
 function AppWithRedux() {
-    const [minValueInput, setMinValueInput] = useState(0)
-    const [maxValueInput, setMaxValueInput] = useState(0)
 
     const count = useSelector<AppRootStateType, number>(state => state.count.count)
     const minValue = useSelector<AppRootStateType, number>(state => state.count.minValue)
@@ -17,15 +21,16 @@ function AppWithRedux() {
     const dispatch = useDispatch()
 
     const set = () => {
-        dispatch(setInputMaxAC(maxValueInput))
-        dispatch(setInputMinAC(minValueInput))
+        dispatch(setInputMaxAC(maxValue))
+        dispatch(setInputMinAC(minValue))
+        dispatch(setCountValueAC(minValue))
     }
 
     const setInputMax = (value: number) => {
-        setMaxValueInput(value)
+        dispatch(setInputMaxAC(value))
     }
     const setInputMin = (value: number) => {
-        setMinValueInput(value)
+        dispatch(setInputMinAC(value))
     }
     const countButton = () => {
         if (maxValue) {
@@ -38,9 +43,9 @@ function AppWithRedux() {
             dispatch(restButtonAC())
     }
 
-    let spanText = maxValue<1 || minValue < 0 || maxValue < minValue ?'Incorrect value':count
+    let spanText = maxValue < 1 || minValue < 0 || maxValue < minValue ?'Incorrect value':count
     let spanCountClass = () => {
-        if(maxValue<1 || minValue < 0 || maxValue < minValue){return 'spanCount spanRed'}
+        if(maxValue < 1 || minValue < 0 || maxValue < minValue){return 'spanCount spanRed'}
         if(count===maxValue){return 'spanCount spanRed'}
         else{return 'spanCount'}
     }
@@ -52,15 +57,15 @@ function AppWithRedux() {
                     <section className='box_section_input'>
                         <span className='span'>MAX VALUE:</span>
                         <Input type={'number'}
-                               value={maxValueInput}
+                               value={maxValue}
                                setInput={setInputMax}
-                               classNameInput={maxValue<1||maxValue<minValue?'input':''}
+                               classNameInput={maxValue < 1||maxValue<minValue?'input':''}
                         />
                     </section>
                     <section className='box_section_input'>
                         <span className='span'>MIN VALUE:</span>
                         <Input type={'number'}
-                               value={minValueInput}
+                               value={minValue}
                                setInput={setInputMin}
                                classNameInput={minValue<0||minValue>maxValue?'input':''}
                         />
